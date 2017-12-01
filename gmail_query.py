@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 """Query e-mail from gmail
@@ -50,8 +50,7 @@ from dateutil.parser import parse
 from bitmath import parse_string
 from operator import itemgetter
 from apiclient import discovery
-from oauth2client import client
-from oauth2client import tools
+from oauth2client import client, tools
 from dateutil import tz
 from shutil import move
 from os import path
@@ -89,7 +88,7 @@ except NameError:
 # ---------------------------------------------------------------------
 # Main function wrapper
 
-cfgfile  = path.join(path.expanduser('~'), '.gmail_query.conf')
+cfgfile  = path.join(path.expanduser('~'), '.config', 'gmail-download', 'gmail_query.conf')
 ext_dict = {'eml': '.eml',
             'docx': '.docx',
             'html': '.html',
