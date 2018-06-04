@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 
 """Query e-mail from gmail
 
@@ -8,9 +7,17 @@ default). Output is saved to a subfolder named after the requested start
 date within a specified target output folder. You can also specify
 "sorting" rules to pre-classify your e-mail into folders.
 
-To get started (and set up Gmail to allow you to do this) see
+To get started and allow your Gmail account to download messages see
 
-https://developers.google.com/gmail/api/quickstart/python
+    https://developers.google.com/gmail/api/quickstart/python
+
+Once you turn on the API, save the `client_secret.json` file to
+
+    ~/.config/gmail-download/client_secret.json
+
+Then run
+
+    python quickstart.py
 
 Usage
 -----
@@ -22,7 +29,6 @@ $ gmail-query.py -d 2016-06-01 -o ~/Downloads/email
 
 # From Python
 >>> from gmail_query import gmail_query
->>> from dateutil import tz
 >>> query = gmail_query(outdir = '/path/to/output')
 >>> query.query()
 >>> query.query(todays = '2016-06-01', bdays = 7)
@@ -45,7 +51,7 @@ messages within a thread: An e-mail object can be a message or a thread
 and this needs to handle both.
 """
 
-from __future__ import division, print_function
+from configparser import ConfigParser, RawConfigParser
 from dateutil.parser import parse
 from bitmath import parse_string
 from operator import itemgetter
@@ -65,25 +71,6 @@ import json
 import sys
 import os
 import re
-
-# Python 2/3 compat
-# -----------------
-
-try:
-    from ConfigParser import ConfigParser, RawConfigParser
-except:
-    from configparser import ConfigParser, RawConfigParser
-
-try:
-    input = __builtins__.raw_input
-except:
-    raw_input = input
-
-try:
-    unicode is unicode
-except NameError:
-    def unicode(x):
-        return str(x, 'utf-8')
 
 # ---------------------------------------------------------------------
 # Main function wrapper
@@ -767,7 +754,7 @@ class gmail_query():
                 att_bm = parse_string('{:.9f}B'.format(att_size)).best_prefix()
                 if att_size < msize.bytes:
                     att  = self.get_att(msg['threadId'], att_id)
-                    body = unicode(att['data']).encode('utf-8')
+                    body = str(att['data']).encode('utf-8')
                     att_data = body
                 else:
                     msg_size  = 'NOTE: Att size was %s but limit set to %s'
@@ -811,7 +798,7 @@ class gmail_query():
 
             pmime = p['mimeType']
             body  = p['body']['data']
-            plain = base64.urlsafe_b64decode(unicode(body).encode('utf-8'))
+            plain = base64.urlsafe_b64decode(str(body).encode('utf-8'))
         except:
             pmime = 'text/plain'
             plain = 'Message body could not be retrieved.'
@@ -1030,9 +1017,9 @@ def print_df_msg(dfmsg, dest, tzstr, otype, ext):
             f = dfmsg['date'][0].strftime(dstr)
 
     try:
-        h  = unicode(h).encode('utf-8')
-        fh = unicode(fh).encode('utf-8')
-        b  = unicode(b).encode('utf-8')
+        h  = str(h).encode('utf-8')
+        fh = str(fh).encode('utf-8')
+        b  = str(b).encode('utf-8')
     except:
         pass
 
@@ -1068,7 +1055,7 @@ def print_df_msg(dfmsg, dest, tzstr, otype, ext):
             print(b + os.linesep, file = fout)
 
             print('--' + msg_sep, file = fout)
-            print(unicode(att_h).encode('utf-8') + os.linesep, file = fout)
+            print(str(att_h).encode('utf-8') + os.linesep, file = fout)
             att_wrap = hard_wrap(a.replace('-', '+').replace('_', '/'), 76)
             print(att_wrap + os.linesep, file = fout)
 
