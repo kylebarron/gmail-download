@@ -113,10 +113,11 @@ class gmail_query():
             end_date (str): 'today' or ISO 8601 (i.e. YYYY-MM-DD) date to end
                 searching for emails (inclusive)
             label (str): label to download messages for
-            att_get (bool): download attachments
-            max_size (int): max attachment size to download in bytes
             g_query (str): Google search string. See
                 https://support.google.com/mail/answer/7190?hl=en
+            tz_locale (str): Time zone to put all times in
+            att_get (bool): download attachments
+            max_size (int): max attachment size to download in bytes
 
         Returns:
             Output dates email to specified output folder and prints or

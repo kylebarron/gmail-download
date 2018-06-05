@@ -60,6 +60,7 @@ This is the primary function of the `gmail_query` class. It downloads emails for
 - `end_date` (`str`): Date (formatted `YYYY-MM-DD`) to end searching for emails (inclusive)
 - `label` (`str`): label to download messages for
 - `g_query` (`str`): [Google search string](https://support.google.com/mail/answer/7190?hl=en)
+- `tz_locale` (`str`): Time zone to put all times in
 
 
 ## To Do
