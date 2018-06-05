@@ -27,7 +27,7 @@ You'll need to use that file location for the `client_secret_path` argument of `
 ## Usage
 
 ```python
-from gmail_query import gmail_query
+from gmail_download import gmail_query
 q = gmail_query(
   email_address='janedoe@example.com',
   outdir='/path/to/output',
