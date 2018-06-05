@@ -1,202 +1,69 @@
 # Description
 
-Download emails from Gmail. 
+Download emails from Gmail.
 Query gmail e-mail for a specified date range. Output is saved by email thread
 within the folder provided. You can also specify [search
 rules](https://support.google.com/mail/answer/7190?hl=en).
 
-Setup
------
+## Setup
 
-Dependencies
-* ConfigParser
-* apiclient
-* oauth2client
-* pandas
-* httplib2
-* bitmath
-* pypandoc
-* pandoc
-
-You also need to set up Gmail to query it from python. See the
-[Gmail API quickstart](https://developers.google.com/gmail/api/quickstart/python)
-for instructions. Once you have the Gmail API set up, run
-```bash
-mkdir $HOME/lib
-cd $HOME/lib
-git clone https://github.com/mcaceresb/gmail-download
-cd gmail-download
-chmod +x ./gmail_query.py
-./gmail_query.py setup
+```
+pip install git+https://github.com/kylebarron/gmail_download
 ```
 
-The last line will guide you through creating `$HOME/.gmail_query.conf`; the file will look like this:
-```
-[Gmail]
-email   = mauricio.caceres.bravo@gmail.com
-secret  = ~/lib/bin/client_secret.json
-appname = Gmail API Python Quickstart
+You also need to get a key from Gmail to allow it to receive queries from Python.
+Adapted from the [Gmail API quickstart](https://developers.google.com/gmail/api/quickstart/python):
 
-[Setup]
-output_folder          = ~/Downloads/email
-output_type            = markdown_strict
-output_ext             = .md
-download_attachments   = True
-max_attachment_size    = 20MiB
-query_days             = 7
-threaded_first         = True
-notify_email           = False
-sorting_rules          = ~/lib/lib/gmail_rules.json
-sorting_case_sensitive = False
-```
+1. Use [this wizard](https://console.developers.google.com/start/api?id=gmail) to create or select a project in the Google Developers Console and automatically turn on the API. Click **Continue**, then **Go to credentials**.
+2. On the **Add credentials to your project** page, click the **Cancel** button.
+3. At the top of the page, select the **OAuth consent screen** tab. Select an **Email address**, enter a **Product name** if not already set, and click the **Save** button.
+4. Select the **Credentials** tab, click the **Create credentials** button and select **OAuth client ID**.
+5. Select the application type **Other**, enter the name "Gmail API Quickstart", and click the **Create** button.
+6. Click **OK** to dismiss the resulting dialog.
+7. Click the `file_download` (Download JSON) button to the right of the client ID.
 
-The options under `[Gmail]` are required. The options under `[Setup]` are optional and can be
-changed in the program call (they merely represent the defaults).
+You'll need to use that file location for the `client_secret_path` argument of `gmail_query()`.
 
-Usage
------
+## Usage
 
-```bash
-gmail-query.py
-gmail-query.py -d 2016-06-01 -o ~/Downloads/email
-gmail-query.py --mail --days-back 7 --first \
-    --sort-rules gmail_rules.json --output-type html
-```
-
-Though intended to be used from the command line, one can run the query from python
 ```python
 from gmail_query import gmail_query
-from dateutil import tz
-query = gmail_query(outdir = '/path/to/output')
-query.query()
-query.query(todays = '2016-06-01')
-query.query(bdays  = 7,
-            mail   = True,
-            first  = True,
-            otype  = 'html',
-            sort_rules = 'gmail_rules.json'):
+q = gmail_query(
+  email_address='janedoe@example.com',
+  outdir='/path/to/output',
+  client_secret_path='~/.config/gmail-download/client_secret.json',
+  credential_path='~/.credentials/gmail_download.json'):
+q.query(
+  begin_date='2018-01-01',
+  end_date='today',
+  label=None,
+  g_query='from:johndoe@example.com subject:dinner',
+  tz_locale='America/New_York')
 ```
 
-Documentation
--------------
+## Documentation
 
-### Sorting rules
+### `gmail_query`
 
-Sorting rules are meant to classify e-mail based on regexes. The file is
-a JSON file formatted as follows
+This is the class that sets up a connection with Google's servers. Arguments are:
 
-```javascript
-{
-    "folder1": {
-        "rules": ["regexp?",
-                  "cookies"],
-        "priority": 0
-    },
-    "folder2": {
-        "rules": ["(from|cc|bcc|to):.*cookies@(gmail\\.com|yahoo\\.com)",
-                  "subject:.*cookies"],
-        "priority": 99
-    }
-}
-```
+- `email_address` (`str`): your email address
+- `outdir` (`str`): the folder in which to save emails
+- `client_secret_path` (`str`): the path to the `client_secret.json` file you downloaded in step 7 of the setup
+- `credential_path` (`str`): the path to save the OAuth2 credentials that are generated the first time you use the program
 
-This specifies whether to move e-mails matching any of the specified
-rules into folders of the rule set's name. The moves happen in the order
-specified by `priotity`. In the example above, everything matching the
-regexes `regexp?` OR `cookies` into `folder1`, a subfolder which will
-be created in the output folder. Then it would move everything from or
-to `cookies@gmail.com` and `cookies@yahoo.com` to `folder2`.
+### `gmail_query.query`
 
-Note downloaded e-mails will start with from, to, cc, bcc, subject,
-date, and content statements, meaning that one can sort based on those
-by prepending `(from|cc|bcc|to|subject|content-type):` to a given rule.
+This is the primary function of the `gmail_query` class. It downloads emails for a given query.
 
-Searches are *case insensitive* by default.
+- `begin_date` (`str`): Date (formatted `YYYY-MM-DD`) to begin searching for emails
+- `end_date` (`str`): Date (formatted `YYYY-MM-DD`) to end searching for emails (inclusive)
+- `label` (`str`): label to download messages for
+- `g_query` (`str`): [Google search string](https://support.google.com/mail/answer/7190?hl=en)
 
-### Config file
 
-There are two sets of options. First, Gmail options which are determined
-when you set up the [Gmail API](https://developers.google.com/gmail/api/quickstart/python)
-- `email`, your gmail account email.
-- `secret`, your secret API file.
-- `appname`, the app name you choose for this instance of the Gmail API.
+## To Do
 
-Then there are options that the program will assume as default when
-run. All these options can be changed when running the program, but
-unless specified the option in the `.conf` file will be used
-
-- `output_folder`: A file path to the default ouptut folder to download e-mail to.
-- `output_type`: 'eml' or any output type supported by `pandoc`
-- `output_ext`: Extension (though the program tries to guess, I am not familiar with every output type supported by pandoc).
-- `download_attachments`: 'True' or 'False', whether to download attachments.
-- `max_attachment_size`: largest attachment size to download. This tolerates any string format that can be parsed
-by `bitmath.parse_string` (e.g. 5MiB, 2KiB, 1.7GiB, etc.)
-- `query_days`: Integer, the number of days backwards from the date specified to query e-mail (e.g. 7 queries the last week).
-- `threaded_first`: 'True' or 'False', whether to thread e-mails using the first-email downloaded for a given thread (otherwise it uses the latest downloaded e-mail for the thread).
-- `notify_email`: 'True' or 'False', whether to notify you via e-mail that this script ran.
-- `sorting_rules`: A file path to the sorting rules to use to classify e-mail once downloaded.
-- `sorting_case_sensitive`: 'True' or 'False', Whether the regexes in `sorting_rules` should be case sensitive.
-
-### Main function
-
-```bash
-usage: gmail_query.py [-h] [--auth_host_name AUTH_HOST_NAME]
-                      [--noauth_local_webserver]
-                      [--auth_host_port [AUTH_HOST_PORT [AUTH_HOST_PORT ...]]]
-                      [--logging_level {DEBUG,INFO,WARNING,ERROR,CRITICAL}]
-                      [-o OUT] [-d DATE] [-t OUTPUT_TYPE] [-e ext] [-a]
-                      [--attachment-max-size MAX_SIZE] [-b DAYS_BACK] [-f]
-                      [-m] [--sort-rules SORT_RULES] [--case-sensitive]
-
-optional arguments:
-  -h, --help            show this help message and exit
-  --auth_host_name AUTH_HOST_NAME
-                        Hostname when running a local web server.
-  --noauth_local_webserver
-                        Do not run a local web server.
-  --auth_host_port [AUTH_HOST_PORT [AUTH_HOST_PORT ...]]
-                        Port web server should listen on.
-  --logging_level {DEBUG,INFO,WARNING,ERROR,CRITICAL}
-                        Set the logging level of detail.
-  -o OUT, --output OUT  Output folder.
-  -d DATE, --date DATE  Date to query.
-  -t OUTPUT_TYPE, --output-type OUTPUT_TYPE
-                        Output type.
-  -e ext, --ext ext     File extension.
-  -a, --attachments     Download attachments.
-  --attachment-max-size MAX_SIZE
-                        Largest attachment size.
-  -b DAYS_BACK, --days-back DAYS_BACK
-                        Days back to query e-mail.
-  -f, --first           Save by first message in thread.
-  -m, --mail            Send notification e-mail.
-  --sort-rules SORT_RULES
-                        File with sorting rules.
-  --case-sensitive      Sorting rules are case-sensitive.
-```
-
-Notes
------
-
-While I have made an effort to make this script platform independent, I
-have only tested it on my local Linux machine.
-
-I do realize that pandas is a rather annoying dependence to have, but I
-wanted to download threaded messages into the same subfolder and using
-pandas seemed like the easiest way to group messages by thread.
-
-Further, since I download messages by thread, I don't know a priori the
-depth of the message thread or whether a "thread" is really a single
-message. Hence all the awkward try/except pairs that try to find the
-messages within a thread: An e-mail object can be a message or a thread
-and this needs to handle both.
-
-TODO
-----
-
-- [ ] Handle multiple attachments.
+- [ ] Download attachments.
 - [ ] Improve documentation.
-- [ ] Progress bar when downloading attachments
 - [ ] Verbose option
-- [ ] Check sorting rule file format.
-- [ ] Add option to query all threads occurring in time span and then download all e-mails associated with thread.
