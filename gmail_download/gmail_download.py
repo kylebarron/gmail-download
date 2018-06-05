@@ -140,7 +140,7 @@ class gmail_query():
         query = ' '.join(query)
 
         msg_list = self.messages.list(
-            userId='me', q=query, maxResults=1000).execute()['messages']
+            userId='me', q=query, maxResults=5000).execute()['messages']
 
         msgs = pd.DataFrame({
             'msg_id': [x['id'] for x in msg_list],
