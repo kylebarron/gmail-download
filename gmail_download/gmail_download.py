@@ -50,24 +50,6 @@ from dateutil import tz
 
 # from bitmath import parse_string
 
-# ---------------------------------------------------------------------
-# Main function wrapper
-
-
-def main():
-    query = gmail_query(
-        email_address='kylebarron2@gmail.com', outdir='~/emails')
-    query.query(
-        begin_date='2018-01-01',
-        end_date='today',
-        label='geisinger',
-        tz_locale='America/New_York',
-        att_get=False)
-
-
-# ---------------------------------------------------------------------
-# Main query wrapper
-
 
 class gmail_query():
     """Query gmail
@@ -406,10 +388,3 @@ class gmail_query():
             print('Storing credentials to ' + credential_path)
 
         return credentials
-
-
-# ---------------------------------------------------------------------
-# Run the things
-
-if __name__ == '__main__':
-    main()
