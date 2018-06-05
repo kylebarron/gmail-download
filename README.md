@@ -1,10 +1,9 @@
-Description
------------
+# Description
 
-Query gmail e-mail for a specified date range (today only is the
-default). Output is saved to a subfolder named after the requested start
-date within a specified target output folder. You can also specify
-"sorting" rules to pre-classify your e-mail into folders.
+Download emails from Gmail. 
+Query gmail e-mail for a specified date range. Output is saved by email thread
+within the folder provided. You can also specify [search
+rules](https://support.google.com/mail/answer/7190?hl=en).
 
 Setup
 -----
@@ -195,9 +194,9 @@ and this needs to handle both.
 TODO
 ----
 
-- [ ] Handle multiple attachments.  
+- [ ] Handle multiple attachments.
 - [ ] Improve documentation.
 - [ ] Progress bar when downloading attachments
 - [ ] Verbose option
-- [ ] Check sorting rule file format.  
-- [ ] Add option to query all threads occurring in time span and then download all e-mails associated with thread.  
+- [ ] Check sorting rule file format.
+- [ ] Add option to query all threads occurring in time span and then download all e-mails associated with thread.

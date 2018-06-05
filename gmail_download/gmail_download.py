@@ -34,8 +34,9 @@ $ gmail-query.py -d 2016-06-01 -o ~/Downloads/email
 
 import base64
 import datetime
-import httplib2
 import textwrap
+
+import httplib2
 import oauth2client
 import pandas as pd
 
