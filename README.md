@@ -32,7 +32,7 @@ q = gmail_query(
   email_address='janedoe@example.com',
   outdir='/path/to/output',
   client_secret_path='~/.config/gmail-download/client_secret.json',
-  credential_path='~/.credentials/gmail_download.json'):
+  credential_path='~/.credentials/gmail_download.json')
 q.query(
   begin_date='2018-01-01',
   end_date='today',
