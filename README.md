@@ -29,16 +29,16 @@ You'll need to use that file location for the `client_secret_path` argument of `
 ```python
 from gmail_download import gmail_query
 q = gmail_query(
-  email_address='janedoe@example.com',
-  outdir='/path/to/output',
-  client_secret_path='~/.config/gmail-download/client_secret.json',
-  credential_path='~/.credentials/gmail_download.json')
+    email_address='janedoe@example.com',
+    outdir='/path/to/output',
+    client_secret_path='~/.config/gmail-download/client_secret.json',
+    credential_path='~/.credentials/gmail_download.json')
 q.query(
-  begin_date='2018-01-01',
-  end_date='today',
-  label=None,
-  g_query='from:johndoe@example.com subject:dinner',
-  tz_locale='America/New_York')
+    begin_date='2018-01-01',
+    end_date='today',
+    label=None,
+    g_query='from:johndoe@example.com subject:dinner',
+    tz_locale='America/New_York')
 ```
 
 ## Documentation
