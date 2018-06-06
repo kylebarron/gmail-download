@@ -1,4 +1,6 @@
-# Description
+# gmail_download
+
+## Description
 
 Download emails from Gmail.
 Query gmail e-mail for a specified date range. Output is saved by email thread
