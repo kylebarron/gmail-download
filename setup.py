@@ -35,7 +35,7 @@ setup(
     install_requires=requirements,
     entry_points={
         'console_scripts': [
-            'gmail_download_auth=gmail_download.quickstart:main']},
+            'gmail_download_auth=gmail_download.quickstart:get_credentials']},
     license="MIT license",
     long_description=readme + '\n\n' + history,
     long_description_content_type='text/markdown',
