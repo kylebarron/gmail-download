@@ -1,9 +1,7 @@
 #!/usr/bin/env python3
-import httplib2
 import os
 import argparse
 
-from apiclient import discovery
 from oauth2client import client
 from oauth2client import tools
 from oauth2client.file import Storage
@@ -42,16 +40,5 @@ def get_credentials():
         print('Storing credentials to ' + credential_path)
     return credentials
 
-
-def main():
-    """Shows basic usage of the Gmail API.
-
-    Creates a Gmail API service object and outputs a list of label names
-    of the user's Gmail account.
-    """
-    credentials = get_credentials()
-    http = credentials.authorize(httplib2.Http())
-    service = discovery.build('gmail', 'v1', http=http)
-
 if __name__ == '__main__':
-    main()
+    get_credentials()
