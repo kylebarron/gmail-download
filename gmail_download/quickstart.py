@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import httplib2
 import os
 import argparse
@@ -12,7 +13,7 @@ flags = argparse.ArgumentParser(parents=[tools.argparser]).parse_args()
 # If modifying these scopes, delete your previously saved credentials
 # at ~/.credentials/gmail-python-quickstart.json
 SCOPES = 'https://www.googleapis.com/auth/gmail.readonly'
-CLIENT_SECRET_FILE = '/home/kyle/.config/gmail-download/client_secret.json'
+CLIENT_SECRET_FILE = '~/.config/gmail-download/client_secret.json'
 APPLICATION_NAME = 'gmail-download'
 
 
@@ -34,7 +35,8 @@ def get_credentials():
     store = Storage(credential_path)
     credentials = store.get()
     if not credentials or credentials.invalid:
-        flow = client.flow_from_clientsecrets(CLIENT_SECRET_FILE, SCOPES)
+        flow = client.flow_from_clientsecrets(
+            os.path.expanduser(CLIENT_SECRET_FILE), SCOPES)
         flow.user_agent = APPLICATION_NAME
         credentials = tools.run_flow(flow, store, flags)
         print('Storing credentials to ' + credential_path)

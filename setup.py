@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-
 """The setup script."""
 
 from setuptools import setup, find_packages
@@ -16,13 +15,9 @@ requirements = [
     'httplib2 >= 0.11.3',
     'oauth2client >= 4.1.2',
     'pandas >= 0.23.0',
-    'python-dateutil >= 2.7.3',
-]
+    'python-dateutil >= 2.7.3', ]
 
-setup_requirements = [
-    'setuptools >= 38.6.0',
-    'twine >= 1.11.0'
-]
+setup_requirements = ['setuptools >= 38.6.0', 'twine >= 1.11.0']
 
 test_requirements = []
 
@@ -35,10 +30,12 @@ setup(
         'License :: OSI Approved :: MIT License',
         'Natural Language :: English',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.6',
-    ],
+        'Programming Language :: Python :: 3.6', ],
     description="Download emails from Gmail",
     install_requires=requirements,
+    entry_points={
+        'console_scripts': [
+            'gmail_download_auth=gmail_download.quickstart:main']},
     license="MIT license",
     long_description=readme + '\n\n' + history,
     long_description_content_type='text/markdown',

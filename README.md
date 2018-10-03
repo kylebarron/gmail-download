@@ -24,7 +24,19 @@ Adapted from the [Gmail API quickstart](https://developers.google.com/gmail/api/
 6. Click **OK** to dismiss the resulting dialog.
 7. Click the `file_download` (Download JSON) button to the right of the client ID.
 
-You'll need to use that file location for the `client_secret_path` argument of `gmail_query()`.
+This package expects the `client_secret.json` file to be placed at
+
+```
+~/.config/gmail-download/client_secret.json
+```
+
+To finish the authentication, from the command line run the following
+
+```
+gmail_download_auth
+```
+
+Your web browser should open to the Gmail authentication page.
 
 ## Usage
 
@@ -32,9 +44,7 @@ You'll need to use that file location for the `client_secret_path` argument of `
 from gmail_download import gmail_query
 q = gmail_query(
     email_address='janedoe@example.com',
-    outdir='/path/to/output',
-    client_secret_path='~/.config/gmail-download/client_secret.json',
-    credential_path='~/.credentials/gmail_download.json')
+    outdir='/path/to/output')
 q.query(
     begin_date='2018-01-01',
     end_date='today',
@@ -42,6 +52,9 @@ q.query(
     g_query='from:johndoe@example.com subject:dinner',
     tz_locale='America/New_York')
 ```
+
+`client_secret_path` and `credential_path` are optional arguments to
+`gmail_query` in case those files are located in non-standard locations.
 
 ## Documentation
 
